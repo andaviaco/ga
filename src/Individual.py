@@ -1,26 +1,29 @@
-import random as rd
+import random as rand
+import numpy as np
 
 
 class Individual(object):
     fitness = None
 
     """docstring for Individual"""
-    def __init__(self, genotype):
+    def __init__(self, genotype, initial_fitness):
         super(Individual, self).__init__()
         self.genotype = genotype
+        self.fitness = initial_fitness
 
-    def mutate(self, mutation_p):
-        r = rd.random()
+    def mutate(self, mutation_p, lb, ub):
+        mutated_genotype = []
 
-        if r < mutation_p:
-            allele_index = rd.randrange(0, len(self.genotype))
+        for i, gen in enumerate(self.genotype):
+            r = rand.random()
 
-            if self.genotype[allele_index] == 0:
-                self.genotype[allele_index] = 1
+            if r < mutation_p:
+                mutated_value = lb[i] + (ub[i] - lb[i]) * r
+                mutated_genotype.append(mutated_value)
             else:
-                self.genotype[allele_index] = 0
+                mutated_genotype.append(gen)
 
-        return self
+        self.genotype = np.around(mutated_genotype, decimals=4)
 
     def __repr__(self):
         return f'<Individual {self.genotype} : {self.fitness}>'
